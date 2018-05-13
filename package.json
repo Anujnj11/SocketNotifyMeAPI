@@ -1,0 +1,19 @@
+{
+  "name": "socketnotifyme",
+  "version": "1.0.0",
+  "description": "Implementing socket program for notify me",
+  "main": "node app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Anuj Gupta",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
+    "express": "^4.16.3",
+    "nodemon": "^1.17.4",
+    "request": "^2.85.0",
+    "socket.io": "^2.1.0"
+  }
+}
