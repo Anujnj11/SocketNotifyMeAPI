@@ -69,8 +69,12 @@ io.on('connection', function (client) {
   // client.on('register', handleRegister)
   // client.on('join', handleJoin)
   // client.on('leave', handleLeave)
-  client.on('chat message', message(msg));
-  
+  // client.on('chat message', message(msg));
+
+  client.on('chat message', function(msg){
+    console.log("Emitted data: msg: " + msg);
+    io.emit('chat message', msg);
+  });
   // client.on('chatrooms', handleGetChatrooms)
   // client.on('availableUsers', handleGetAvailableUsers)
   client.on('disconnect', function () {
