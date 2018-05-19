@@ -72,14 +72,13 @@ io.on('connection', function (client) {
   // client.on('chat message', message(msg));
 
   client.on('chat message', function(msg){
-    console.log("Emitted data: msg: " + msg);
-    var AESToken = msg.body.AESToken;
-    if (AESToken != undefined && AESToken != null && AESToken != "") {
-      var message = msg.body.Message;
-      var Date = msg.body.Date;
-      var CallLog = msg.body.CallLog;
-      var ObjIsCall = msg.body.IsCall;
-      var ObjIsSMS = msg.body.IsSMS;
+    // console.log("Emitted data: msg: " + msg);
+      var message = msg.Message;
+      var Date = msg.Date;
+      var AESToken = msg.AESToken;      
+      var CallLog = msg.CallLog;
+      var ObjIsCall = msg.IsCall;
+      var ObjIsSMS = msg.IsSMS;
       var ObjUserDetailsAESM = {
         "AESToken": AESToken,
         "Message": message,
@@ -89,8 +88,8 @@ io.on('connection', function (client) {
         "IsSMS": ObjIsSMS,
         "IsViewed": false
     };
-  }
-    io.emit('chat message', ObjUserDetailsAESM);
+    console.log("Emitted data: msg: " +JSON.stringify( ObjUserDetailsAESM));
+    io.emit('chat message', JSON.stringify(ObjUserDetailsAESM));
   });
   // client.on('chatrooms', handleGetChatrooms)
   // client.on('availableUsers', handleGetAvailableUsers)
