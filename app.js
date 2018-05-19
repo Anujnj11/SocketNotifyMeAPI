@@ -69,7 +69,8 @@ io.on('connection', function (client) {
   // client.on('register', handleRegister)
   // client.on('join', handleJoin)
   // client.on('leave', handleLeave)
-  client.on('chat message', message);
+  client.on('chat message', message(msg));
+  
   // client.on('chatrooms', handleGetChatrooms)
   // client.on('availableUsers', handleGetAvailableUsers)
   client.on('disconnect', function () {
@@ -94,8 +95,8 @@ function leave(chatroomName, cb) {
   console.log('leave', chatroomName, cb)
 }
 
-function message(chatroomName, msg, cb) {
-  console.log("Emitted data:" + "chatroomName :" + chatroomName + " msg: " + msg +" cb: "+ cb );
+function message(msg) {
+  console.log("Emitted data: msg: " + msg );
   io.emit('chat message', msg);
 }
 
