@@ -96,7 +96,7 @@ function leave(chatroomName, cb) {
 }
 
 function message(msg) {
-  console.log("Emitted data: msg: " + msg );
+  console.log("Emitted data: msg: " + msg);
   io.emit('chat message', msg);
 }
 
