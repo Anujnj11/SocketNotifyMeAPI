@@ -133,6 +133,6 @@ http.listen(port, function(){
 });
 
 
-setInterval(function() {
-  http.get("https://socketnotifymeapi.herokuapp.com");
-}, 300000); // every 5 minutes (300000)
+// setInterval(function() {
+//   http.get("https://socketnotifymeapi.herokuapp.com");
+// }, 300000); // every 5 minutes (300000)
