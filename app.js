@@ -131,3 +131,8 @@ app.get('/', function(req, res){
 http.listen(port, function(){
   console.log('listening on *:' + port);
 });
+
+
+setInterval(function() {
+  http.get("https://socketnotifymeapi.herokuapp.com");
+}, 300000); // every 5 minutes (300000)
