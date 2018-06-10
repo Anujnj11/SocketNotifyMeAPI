@@ -51,7 +51,7 @@ app.post('/postAESLogDetails', (req, res, next) => {
     };
       io.emit('chat message', ObjUserDetailsAESM);  
     
-      res.json({ Status : 0});
+      res.json({ success: true, msg: 'Added'});
     }
 });
 
@@ -65,7 +65,7 @@ app.post('/postAESLogDetails', (req, res, next) => {
 // });
 
 io.on('connection', function (client) {
-  console.log("New Connection: "+client.id + "  "+ new Date());
+  console.log("New Connection: "+ client.id + "  "+ new Date());
   // client.on('register', handleRegister)
   // client.on('join', handleJoin)
   // client.on('leave', handleLeave)
@@ -88,9 +88,29 @@ io.on('connection', function (client) {
         "IsSMS": ObjIsSMS,
         "IsViewed": false
     };
-    console.log("Emitted data: msg: " +JSON.stringify( ObjUserDetailsAESM));
-    io.emit('chat message', JSON.stringify(ObjUserDetailsAESM));
+    console.log("Emitted data: msg: " + JSON.stringify( ObjUserDetailsAESM));
+    io.emit('incoming text', ObjUserDetailsAESM);
   });
+
+  client.on('reply message', function(ExportMsg){
+    // console.log("Emitted data: msg: " + msg);
+      var message = ExportMsg.Message;
+      var Date =ExportMsg.Date;
+      var MobileNumber = ExportMsg.MobileNumber
+      var AESToken = ExportMsg.AESToken;      
+      var ObjUserDetailsAESM = {
+        "AESToken": AESToken,
+        "message":message,
+        "MobileNumber":MobileNumber,
+        "Date":Date
+    };
+    console.log("Emitted data: msg: " + JSON.stringify( ObjUserDetailsAESM));
+    // if(socket.connected){
+      io.emit('incoming text', ObjUserDetailsAESM);
+    // }
+  });
+
+
   // client.on('chatrooms', handleGetChatrooms)
   // client.on('availableUsers', handleGetAvailableUsers)
   client.on('disconnect', function () {
@@ -101,32 +121,6 @@ io.on('connection', function (client) {
     console.log(err)
   });
 });
-
-
-function register(name, cb) {
-  console.log('register', name, cb)
-}
-
-function join(chatroomName, cb) {
-  console.log('join', chatroomName, cb)
-}
-
-function leave(chatroomName, cb) {
-  console.log('leave', chatroomName, cb)
-}
-
-function message(msg) {
-  console.log("Emitted data: msg: " + msg);
-  io.emit('chat message', msg);
-}
-
-function getChatrooms(cb) {
-  console.log('chatrooms', null, cb)
-}
-
-function getAvailableUsers(cb) {
-  console.log('availableUsers', null, cb)
-}
 
 
 app.get('/', function(req, res){  
