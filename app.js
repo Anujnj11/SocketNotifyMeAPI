@@ -93,11 +93,16 @@ app.post('/postAESLogDetails', (req, res, next) => {
 
 
 app.get('/getActiveConnection', (req, res) => {
-  try
-  {
-    res.json({success: true, ActiveConnection: JSON.stringify(ActiveConnection)});
-  }catch(err){
-    res.json({success: false,msg: 'Required AES'});
+  try {
+    res.json({
+      success: true,
+      ActiveConnection: JSON.stringify(ActiveConnection)
+    });
+  } catch (err) {
+    res.json({
+      success: false,
+      msg: 'Required AES'
+    });
   }
 });
 
@@ -116,19 +121,26 @@ io.on('connection', function (client) {
     });
 
     client.on('reply message', function (ExportMsg) {
-      var ObjMessageBodyReplyM = new UserdetailsM.MessageBodyReplyM({
-        Date: ExportMsg.Date,
-        AESToken: ExportMsg.AESToken,
-        MobileNumber :ExportMsg.MobileNumber,
-        Message:ExportMsg.Message
-      });
-      ObjMessageBodyReplyM.save((mongoerr, success) => {
-        if (mongoerr != null) 
-        res.json({success: false,msg: 'Not added',error: mongoerr});
-        else {
-          io.emit('incoming text', ObjMessageBodyReplyM);
-        }
-      });
+      if (ExportMsg.AESToken != undefined && ExportMsg.AESToken != "") {
+        var AESToken = ExportMsg.AESToken;
+        var ObjMessageBodyReplyM = new UserdetailsM.MessageBodyReplyM({
+          Date: ExportMsg.Date,
+          AESToken: AESToken,
+          MobileNumber: ExportMsg.MobileNumber,
+          Message: ExportMsg.Message
+        });
+        ObjMessageBodyReplyM.save((mongoerr, success) => {
+          if (mongoerr != null)
+            res.json({
+              success: false,
+              msg: 'Not added',
+              error: mongoerr
+            });
+          else {
+            io.in(AESToken).emit('incoming text', ObjMessageBodyReplyM);
+          }
+        });
+      }
     });
 
     client.on('disconnect', function () {
