@@ -13,22 +13,33 @@ const UserDetailsAES = mongoose.Schema({
     IsCall: Boolean,
     IsSMS: Boolean,
     IsViewed: Boolean,
-    MobileNumber:String
+    MobileNumber: String
 });
 
 
 const UserLoginToken = mongoose.Schema({
-    UserId:String,
-    Password:String,
-    Date:String,
-    AESToken:String,
-    IsValid:Boolean
-  });
+    UserId: String,
+    Password: String,
+    Date: String,
+    AESToken: String,
+    IsValid: Boolean
+});
+
+const MessageBodyReply = mongoose.Schema({
+    Date: String,
+    AESToken: String,
+    MobileNumber :String,
+    Message:String
+});
+
 
 const UserDetailsAESModel = mongoose.model('UserDetailsAESSocket', UserDetailsAES);
-const UserLoginTokenModel  = mongoose.model('UserLoginTokenSocket',UserLoginToken);
+const UserLoginTokenModel = mongoose.model('UserLoginTokenSocket', UserLoginToken);
+const MessageBodyReplyModel = mongoose.model('MessageBodyReplySocket', MessageBodyReply);
+
 
 module.exports = {
-    UserLoginTokenM :UserLoginTokenModel,
-    UserDetailsAESM: UserDetailsAESModel
+    UserLoginTokenM: UserLoginTokenModel,
+    UserDetailsAESM: UserDetailsAESModel,
+    MessageBodyReplyM:MessageBodyReplyModel
 };

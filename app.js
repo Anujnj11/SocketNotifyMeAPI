@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 const Mailer = require('./Mailer.js');
 const UserdetailsM = require('./Model/UserDetails.js');
 const config = require('./config/Database.js');
-const UserLogAPI  = require('./API/UserAPI');
+const UserLogAPI = require('./API/UserAPI');
 
 
 var port = process.env.PORT || 4555;
@@ -43,7 +43,7 @@ app.use(function (req, res, next) {
 app.use(bodyparser.json());
 
 
-
+var ActiveConnection = [];
 
 app.post('/postAESLogDetails', (req, res, next) => {
   try {
@@ -92,34 +92,52 @@ app.post('/postAESLogDetails', (req, res, next) => {
 });
 
 
+app.get('/getActiveConnection', (req, res) => {
+  try
+  {
+    res.json({success: true, ActiveConnection: JSON.stringify(ActiveConnection)});
+  }catch(err){
+    res.json({success: false,msg: 'Required AES'});
+  }
+});
+
+
 io.on('connection', function (client) {
   try {
-    console.log("New Connection: " + client.id + "  " + new Date());
 
+    console.log("New Connection: " + client.id + "  " + new Date());
     client.on('AESGroup', function (AESToken) {
+      var ObjNewConnection = {};
+      ObjNewConnection.Token = AESToken;
+      ObjNewConnection.ClientId = client.id;
+      ObjNewConnection.DateTime = new Date();
+      ActiveConnection.push(ObjNewConnection);
       client.join(AESToken);
     });
 
     client.on('reply message', function (ExportMsg) {
-      // console.log("Emitted data: msg: " + msg);
-      var message = ExportMsg.Message;
-      var Date = ExportMsg.Date;
-      var MobileNumber = ExportMsg.MobileNumber
-      var AESToken = ExportMsg.AESToken;
-      var ObjUserDetailsAESM = {
-        "AESToken": AESToken,
-        "message": message,
-        "MobileNumber": MobileNumber,
-        "Date": Date
-      };
-      console.log("Emitted data: msg: " + JSON.stringify(ObjUserDetailsAESM));
-      // if(socket.connected){
-      io.emit('incoming text', ObjUserDetailsAESM);
-      // }
+      var ObjMessageBodyReplyM = new UserdetailsM.MessageBodyReplyM({
+        Date: ExportMsg.Date,
+        AESToken: ExportMsg.AESToken,
+        MobileNumber :ExportMsg.MobileNumber,
+        Message:ExportMsg.Message
+      });
+      ObjMessageBodyReplyM.save((mongoerr, success) => {
+        if (mongoerr != null) 
+        res.json({success: false,msg: 'Not added',error: mongoerr});
+        else {
+          io.emit('incoming text', ObjMessageBodyReplyM);
+        }
+      });
     });
 
     client.on('disconnect', function () {
       console.log('client disconnect...', client.id + "  " + new Date());
+      try {
+        ActiveConnection.splice(ActiveConnection.indexOf(ActiveConnection.find(x => x.ClientId == client.id)), 1);
+      } catch (err) {
+
+      }
     });
     client.on('error', function (err) {
       console.log('received error from client:', client.id)
