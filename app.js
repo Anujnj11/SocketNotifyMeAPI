@@ -123,12 +123,13 @@ io.on('connection', function (client) {
     });
 
     var tweets = setInterval(function () {
-      setQueMsg(function () {
+      // console.log('Inside Interval');
+      // setQueMsg(function () {
         if (MessageQue.length > 0) {
           client.volatile.emit('lost message', MessageQue);
           MessageQue = [];
         }
-      });
+      // });
     }, 2000);
 
 
