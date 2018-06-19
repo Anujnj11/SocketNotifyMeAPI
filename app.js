@@ -97,7 +97,8 @@ app.get('/getActiveConnection', (req, res) => {
   try {
     res.json({
       success: true,
-      ActiveConnection: JSON.stringify(ActiveConnection)
+      ActiveConnection: JSON.stringify(ActiveConnection),
+      MessageQue : JSON.stringify(MessageQue)
     });
   } catch (err) {
     res.json({
@@ -130,7 +131,7 @@ io.on('connection', function (client) {
           MessageQue = [];
         }
       // });
-    }, 2000);
+    }, 10000);
 
 
     client.on('reply message', function (ExportMsg) {
