@@ -44,6 +44,7 @@ app.use(bodyparser.json());
 
 
 var ActiveConnection = [];
+var MessageQue = [];
 
 app.post('/postAESLogDetails', (req, res, next) => {
   try {
@@ -111,6 +112,7 @@ io.on('connection', function (client) {
   try {
 
     console.log("New Connection: " + client.id + "  " + new Date());
+
     client.on('AESGroup', function (AESToken) {
       var ObjNewConnection = {};
       ObjNewConnection.Token = AESToken;
@@ -119,6 +121,16 @@ io.on('connection', function (client) {
       ActiveConnection.push(ObjNewConnection);
       client.join(AESToken);
     });
+
+    var tweets = setInterval(function () {
+      setQueMsg(function () {
+        if (MessageQue.length > 0) {
+          client.volatile.emit('lost message', MessageQue);
+          MessageQue = [];
+        }
+      });
+    }, 2000);
+
 
     client.on('reply message', function (ExportMsg) {
       if (ExportMsg.AESToken != undefined && ExportMsg.AESToken != "") {
@@ -137,6 +149,7 @@ io.on('connection', function (client) {
               error: mongoerr
             });
           else {
+            MessageQue.push(ObjMessageBodyReplyM);
             io.in(AESToken).emit('incoming text', ObjMessageBodyReplyM);
           }
         });
@@ -146,6 +159,7 @@ io.on('connection', function (client) {
     client.on('disconnect', function () {
       console.log('client disconnect...', client.id + "  " + new Date());
       try {
+        clearInterval(tweets);
         ActiveConnection.splice(ActiveConnection.indexOf(ActiveConnection.find(x => x.ClientId == client.id)), 1);
       } catch (err) {
 
