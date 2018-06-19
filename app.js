@@ -131,7 +131,7 @@ io.on('connection', function (client) {
           MessageQue = [];
         }
       // });
-    }, 5000);
+    }, 2000);
 
 
     client.on('reply message', function (ExportMsg) {
