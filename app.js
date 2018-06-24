@@ -73,7 +73,7 @@ app.post('/postAESLogDetails', (req, res, next) => {
           error: mongoerr
         });
         else {
-          io.in(AESToken).emit('chat message', ObjUserDetailsAESM);
+          io.in(AESToken).emit('SocketNotifyAES', ObjUserDetailsAESM);
           res.json({
             success: true,
             msg: 'Added'
@@ -98,9 +98,10 @@ app.get('/getActiveConnection', (req, res) => {
     res.json({
       success: true,
       ActiveConnection: JSON.stringify(ActiveConnection),
-      MessageQue : JSON.stringify(MessageQue)
+      MessageQue: JSON.stringify(MessageQue)
     });
   } catch (err) {
+    Mailer(Err);
     res.json({
       success: false,
       msg: 'Required AES'
@@ -123,17 +124,20 @@ io.on('connection', function (client) {
       client.join(AESToken);
     });
 
-    var tweets = setInterval(function () {
-      // console.log('Inside Interval');
-      // setQueMsg(function () {
-        if (MessageQue.length > 0) {
-          client.volatile.emit('lost message', MessageQue);
-          MessageQue = [];
-        }
-      // });
-    }, 2000);
+    //Keep active connection for android
+    client.on('pong', function (data) {
+      console.log("Pong received from client");
+    });
 
+    setTimeout(sendHeartbeat, 25000);
 
+    function sendHeartbeat() {
+      setTimeout(sendHeartbeat, 25000);
+      io.emit('ping', {
+        beat: 1
+      });
+    }
+    
     client.on('reply message', function (ExportMsg) {
       if (ExportMsg.AESToken != undefined && ExportMsg.AESToken != "") {
         var AESToken = ExportMsg.AESToken;
@@ -161,10 +165,14 @@ io.on('connection', function (client) {
     client.on('disconnect', function () {
       console.log('client disconnect...', client.id + "  " + new Date());
       try {
-        clearInterval(tweets);
-        ActiveConnection.splice(ActiveConnection.indexOf(ActiveConnection.find(x => x.ClientId == client.id)), 1);
-      } catch (err) {
+        if (ActiveConnection.length > 0)
+          ActiveConnection.splice(ActiveConnection.indexOf(ActiveConnection.find(x => x.ClientId == client.id)), 1);
 
+        if (MessageQue.length > 0)
+          clearInterval(tweets);
+
+      } catch (err) {
+        Mailer(err);
       }
     });
     client.on('error', function (err) {
@@ -173,7 +181,6 @@ io.on('connection', function (client) {
     });
   } catch (Err) {
     Mailer(Err);
-
   }
 });
 
