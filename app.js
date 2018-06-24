@@ -135,6 +135,7 @@ io.on('connection', function (client) {
     setTimeout(sendHeartbeat, 25000);
 
     function sendHeartbeat() {
+      // console.log("send ping");
       setTimeout(sendHeartbeat, 25000);
       io.emit('ping', {
         beat: 1
@@ -171,8 +172,8 @@ io.on('connection', function (client) {
         if (ActiveConnection.length > 0)
           ActiveConnection.splice(ActiveConnection.indexOf(ActiveConnection.find(x => x.ClientId == client.id)), 1);
 
-        if (MessageQue.length > 0)
-          clearInterval(tweets);
+        // if (MessageQue.length > 0)
+        //   clearInterval(tweets);
 
       } catch (err) {
         Mailer(err);
