@@ -100,8 +100,8 @@ app.get('/getActiveConnection', (req, res) => {
   try {
     res.json({
       success: true,
-      ActiveConnection: JSON.stringify(ActiveConnection),
-      MessageQue: JSON.stringify(MessageQue)
+      ActiveConnection: ActiveConnection,
+      MessageQue: MessageQue
     });
   } catch (err) {
     Mailer(Err);
@@ -128,7 +128,7 @@ io.on('connection', function (client) {
     });
 
     //Keep active connection for android
-    client.on('pong', function (data) {
+    client.on('ImAlive', function (data) {
       console.log("Pong received from client");
     });
 
@@ -137,7 +137,7 @@ io.on('connection', function (client) {
     function sendHeartbeat() {
       // console.log("send ping");
       setTimeout(sendHeartbeat, 25000);
-      io.emit('ping', {
+      io.emit('RuThere', {
         beat: 1
       });
     }
