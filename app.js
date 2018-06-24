@@ -189,9 +189,7 @@ app.use('/api', UserLogAPI);
 
 
 app.get('/', function (req, res) {
-  res.json({
-    Status: 0
-  });
+  res.send('Sorry this website is not available in your country : (');
 });
 
 
