@@ -8,7 +8,7 @@ const Mailer = require('./Mailer.js');
 const UserdetailsM = require('./Model/UserDetails.js');
 const config = require('./config/Database.js');
 const UserLogAPI = require('./API/UserAPI');
-
+var favicon = require('serve-favicon');
 
 var port = process.env.PORT || 4555;
 
@@ -38,6 +38,9 @@ app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
+
+
+app.use(favicon("assest/site.ico")); 
 
 //Body parser middleware 
 app.use(bodyparser.json());
@@ -186,6 +189,7 @@ io.on('connection', function (client) {
 
 
 app.use('/api', UserLogAPI);
+
 
 
 app.get('/', function (req, res) {
