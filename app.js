@@ -132,11 +132,11 @@ io.on('connection', function (client) {
       console.log("Pong received from client");
     });
 
-    setTimeout(sendHeartbeat, 25000);
+    setTimeout(sendHeartbeat, 10000);
 
     function sendHeartbeat() {
       // console.log("send ping");
-      setTimeout(sendHeartbeat, 25000);
+      setTimeout(sendHeartbeat, 10000);
       io.emit('RuThere', {
         beat: 1
       });
