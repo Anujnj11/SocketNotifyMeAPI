@@ -128,15 +128,23 @@ io.on('connection', function (client) {
     });
 
     //Keep active connection for android
-    client.on('ImAlive', function (data) {
+    client.on('ImAlive', function (AESToken) {
       console.log("Pong received from client");
+      // if(MessageQue.length > 0) {
+      // // var FilterAESToken =   MessageQue.filter(function(obj){
+      // //     return obj['AESToken'] == AESToken;
+      // //   });
+      //   var FilterData = MessageQue.splice(MessageQue.indexOf(MessageQue.find(x => x.AESToken == AESToken)), 1);
+      //   if(FilterData.length > 0)
+      //   io.in(AESToken).emit('incoming text', FilterData);
+      // }
     });
 
-    setTimeout(sendHeartbeat, 10000);
+    setTimeout(sendHeartbeat, 25000);
 
     function sendHeartbeat() {
       // console.log("send ping");
-      setTimeout(sendHeartbeat, 5000);
+      setTimeout(sendHeartbeat, 15000);
       io.emit('RuThere', {
         beat: 1
       });
