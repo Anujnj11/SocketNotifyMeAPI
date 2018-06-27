@@ -129,7 +129,7 @@ io.on('connection', function (client) {
 
     //Keep active connection for android
     client.on('ImAlive', function (AESToken) {
-      console.log("Pong received from client");
+      console.log("Pong received from client" + AESToken);
       // if(MessageQue.length > 0) {
       // // var FilterAESToken =   MessageQue.filter(function(obj){
       // //     return obj['AESToken'] == AESToken;
