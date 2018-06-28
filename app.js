@@ -140,15 +140,15 @@ io.on('connection', function (client) {
       // }
     });
 
-    setTimeout(sendHeartbeat, 25000);
+    // setTimeout(sendHeartbeat, 25000);
 
-    function sendHeartbeat() {
-      // console.log("send ping");
-      setTimeout(sendHeartbeat, 15000);
-      io.emit('RuThere', {
-        beat: 1
-      });
-    }
+    // function sendHeartbeat() {
+    //   // console.log("send ping");
+    //   setTimeout(sendHeartbeat, 15000);
+    //   io.emit('RuThere', {
+    //     beat: 1
+    //   });
+    // }
     
     client.on('reply message', function (ExportMsg) {
       if (ExportMsg.AESToken != undefined && ExportMsg.AESToken != "") {
