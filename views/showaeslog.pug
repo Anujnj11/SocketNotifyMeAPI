@@ -1,0 +1,58 @@
+html
+    body
+        if !IsError
+            if IsDataPresent != null && IsDataPresent
+                div(style='text-align:center;')
+                    select(id="ddlChange" onchange = 'RenderChangeEvent(this.value)')
+                        option(value="CALL") Call
+                        option(value="SMS") SMS
+                br
+
+                div(style='' id = 'CallDiv')
+                    if CallData.length > 0 
+                        table(border="1" style='text-align:center;')
+                            th Date 
+                            th MobileNumber
+                                for ObjCall in CallData
+                                    tr
+                                        td  #{ObjCall.Date}
+                                        td  #{ObjCall.MobileNumber}
+                    else
+                        p(style='text-align:center;') No incoming call(s)
+
+
+                div(style='display:none;' id = 'SMSDiv')
+                    if SMSData.length > 0
+                        table(border="1" style='text-align:center;')
+                            th Date 
+                                th Message
+                                th MobileNumber
+                                    for ObjSMS in SMSData
+                                        tr
+                                            td  #{ObjSMS.Date}
+                                            td  #{ObjSMS.Message}
+                                            td  #{ObjSMS.MobileNumber}
+                    else
+                        p(style='text-align:center;') No incoming sms
+            else
+                div
+                p We didn't find any more information about this User
+        else
+            p An error has occured!
+    script(type="text/javascript").
+        function RenderChangeEvent(value)
+        {
+            if(value == "SMS"){
+                document.getElementById("SMSDiv").style.display = "block";
+                document.getElementById("CallDiv").style.display = "none";                
+                }
+            else{
+                document.getElementById("SMSDiv").style.display = "none";
+                document.getElementById("CallDiv").style.display = "block";                
+
+            }
+            
+        }
+        //- if (10 == 10) {
+        //-     alert("working");
+        //- }

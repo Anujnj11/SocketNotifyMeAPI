@@ -9,7 +9,7 @@ const Request = require("request");
 const crypto = require('crypto');
 const ENCRYPTION_KEY = '@&*$%^$!@#anuj^^^^^####!!!!!!^^^'; // Must be 256 bytes (32 characters)
 const IV_LENGTH = 16; // For AES, this is always 16
-
+const Mailer = require('../Mailer.js');
 
 
 router.post('/getAESLogDetails', (req, res, next) => {
@@ -190,4 +190,42 @@ function decrypt(text) {
     return decrypted.toString();
 }
 
+var GetAESLog = async function (AESToken, callBack) {
+    var Response;
+    if (AESToken != null && AESToken != "") {
+        try {
+            await UserdetailsM.UserDetailsAESM.find({
+                AESToken: AESToken
+            }, (mongoerr, mongoresponse) => {
+                if (mongoresponse != null) {
+                    Response = JSON.stringify({
+                        success: true,
+                        Data: mongoresponse,
+                        isError: false
+                    });
+                    callBack(Response);
+                } else {
+                    Mailer(mongoerr);
+                    Response = JSON.stringify({
+                        success: false,
+                        Data: mongoerr,
+                        isError: false
+                    });
+                    callBack(Response);
+                }
+            });
+        } catch (err) {
+            Mailer(err);
+            Response = JSON.stringify({
+                success: false,
+                Data: "",
+                isError: true
+            });
+            callBack(Response);
+        }
+    }
+}
+
+
 module.exports = router;
+module.exports.AESLogDetails = GetAESLog;

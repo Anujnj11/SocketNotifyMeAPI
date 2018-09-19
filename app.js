@@ -9,9 +9,11 @@ const UserdetailsM = require('./Model/UserDetails.js');
 const config = require('./config/Database.js');
 const UserLogAPI = require('./API/UserAPI');
 var favicon = require('serve-favicon');
-
+var path = require('path');
 var port = process.env.PORT || 4555;
-
+const {
+  AESLogDetails
+} = UserLogAPI;
 //Connect mongodb with config file 
 mongoose.connect(config.database);
 
@@ -27,6 +29,11 @@ mongoose.connection.on('error', (err) => {
 
 //CORS Middleware
 app.use(cors());
+app.set("view engine", "pug");
+app.set("views", path.join(__dirname, "views"));
+
+
+
 
 app.use(bodyparser.urlencoded({
   extended: true
@@ -40,7 +47,7 @@ app.use(function (req, res, next) {
 });
 
 
-app.use(favicon("assest/site.ico")); 
+app.use(favicon("assest/site.ico"));
 
 //Body parser middleware 
 app.use(bodyparser.json());
@@ -112,6 +119,34 @@ app.get('/getActiveConnection', (req, res) => {
   }
 });
 
+app.get("/getaeslog", async (req, res) => {
+  var AESToken = req.query.aestoken;
+  if (AESToken != null && AESToken != "") {
+    AESLogDetails(AESToken, function (Mongresponse) {
+      Mongresponse = JSON.parse(Mongresponse);
+      if (Mongresponse.success) {
+        var CallLogs = Mongresponse.Data.filter(function (obj) {
+          return obj.IsCall;
+        });
+        CallLogs = CallLogs.reverse();
+        var SMSLogs = Mongresponse.Data.filter(function (obj) {
+          return obj.IsSMS;
+        });
+        SMSLogs = SMSLogs.reverse();
+      }
+      var isDataPresent = Mongresponse.success && Mongresponse.Data.length > 0 ? true : false;
+      res.render("showaeslog", {
+        IsDataPresent: isDataPresent,
+        CallData: CallLogs,
+        SMSData: SMSLogs,
+        IsError:Mongresponse.isError 
+      });
+    });
+  }
+});
+
+
+
 
 io.on('connection', function (client) {
   try {
@@ -149,7 +184,7 @@ io.on('connection', function (client) {
     //     beat: 1
     //   });
     // }
-    
+
     client.on('reply message', function (ExportMsg) {
       if (ExportMsg.AESToken != undefined && ExportMsg.AESToken != "") {
         var AESToken = ExportMsg.AESToken;
