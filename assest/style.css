@@ -1,0 +1,14 @@
+/* style.css */
+body {font-family: monospace;}
+.form--box {box-shadow: 0 3px 3px -2px rgba(0,0,0,.2), 0 3px 4px 0 rgba(0,0,0,.14), 0 1px 8px 0 rgba(0,0,0,.12);max-width: 1000px;margin:40px auto 0;padding: 30px;border-radius: 3px;}
+.form-select {border: 1px solid #333333;-webkit-border-radius: 5px;-moz-border-radius: 5px;border-radius: 5px;display: flex;width: 300px;position: relative;margin:0 auto 40px;}
+.form-select:after {content: '';background: 0 0;position: absolute;right: 5px;width: 0;height: 0;border-left: 9px solid transparent;border-right: 9px solid transparent;border-top: 9px solid #282828;-webkit-border-radius: 5px;-moz-border-radius: 5px;border-radius: 5px;top: 22px;}
+select {border: none;-webkit-border-radius: 5px;-moz-border-radius: 5px;border-radius: 5px;width: 100%;padding: 0 10px;-webkit-appearance: none;-moz-appearance: none;appearance: none;background: 0 0;z-index: 1;padding: 15px;font-size: 18px;}
+.table--data {width: 100%;border: solid 1px #333;}
+.table--data td, .table--data th {padding:15px 10px;text-align: left;}
+.table--data th {padding:20px;}
+.table--data th {color: #ffffff;font-size: 14px;background: #333333;}
+.table--data td {border-bottom: 1px dashed #d6d6d6;color: #383838;border-right: 1px dashed #d6d6d6;}
+.table--data tr:last-child td{border-bottom:none;}
+.table--data td:last-child {border-right: none;}
+.fw600 {font-weight: 600;font-size: 14px;}
